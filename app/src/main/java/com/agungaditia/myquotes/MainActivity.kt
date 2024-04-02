@@ -1,7 +1,9 @@
 package com.agungaditia.myquotes
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -10,6 +12,7 @@ import com.agungaditia.myquotes.databinding.ActivityMainBinding
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
 import cz.msebera.android.httpclient.Header
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
@@ -43,18 +46,43 @@ class MainActivity : AppCompatActivity() {
             override fun onSuccess(
                 statusCode: Int,
                 headers: Array<Header>,
-                responseBody: ByteArray?
+                responseBody: ByteArray
             ) {
-                TODO("Not yet implemented")
+                // ProgressBar = Loading
+                binding.progressBar.visibility = View.INVISIBLE
+
+                val result = String(responseBody)
+                Log.e(TAG, result)
+                try {
+                    val responseObject = JSONObject(result)
+
+                    val quote = responseObject.getString("en")
+                    val author = responseObject.getString("author")
+
+                    binding.tvQuote.text = quote
+                    binding.tvAuthor.text = author
+
+                } catch (e: Exception) {
+                    Toast.makeText(this@MainActivity, e.message, Toast.LENGTH_SHORT).show()
+                    e.printStackTrace()
+                }
             }
 
             override fun onFailure(
                 statusCode: Int,
                 heades: Array<Header>,
-                responseBody: ByteArray?,
-                error: Throwable?
+                responseBody: ByteArray,
+                error: Throwable
             ) {
-                TODO("Not yet implemented")
+                binding.progressBar.visibility = View.INVISIBLE
+
+                val errorMessage = when (statusCode) {
+                    401 -> "$statusCode : Bad Requst"
+                    403 -> "$statusCode : Forbidden"
+                    404 -> "$statusCode : Not Found"
+                    else -> "$statusCode : ${error.message}"
+                }
+                Toast.makeText(this@MainActivity, errorMessage, Toast.LENGTH_SHORT).show()
             }
         })
     }

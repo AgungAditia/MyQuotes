@@ -9,9 +9,11 @@
 
     <TextView
         android:id="@+id/tvQuote"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
         android:text="@string/quote"
+        android:textAlignment="center"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -45,7 +47,7 @@
         android:id="@+id/btnAllQuotes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="10dp"
         android:text="@string/show_list_quotes"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
